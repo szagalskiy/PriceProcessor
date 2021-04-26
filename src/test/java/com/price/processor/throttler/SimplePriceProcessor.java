@@ -1,4 +1,4 @@
-package throttler;
+package com.price.processor.throttler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

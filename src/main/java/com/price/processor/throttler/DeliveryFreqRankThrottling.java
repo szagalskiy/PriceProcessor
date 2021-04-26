@@ -10,7 +10,8 @@ import java.util.HashMap;
  * Pair price with minimal rank is a the next to be returned
  * As pair price is returned, rank is recalculated to provide the equal chance to deliver
  */
-final class DeliveryFreqRankThrottling implements ThrottlingStrategy {
+final class DeliveryFreqRankThrottling implements ThrottlingStrategy
+{
 
     private final HashMap<String, PriceStatistics> reducedPairPrices = new HashMap<>();
 
@@ -21,77 +22,94 @@ final class DeliveryFreqRankThrottling implements ThrottlingStrategy {
         private Long deliveredTotal;
         private Long incomeTotal;
 
-        public PriceStatistics(CurrencyPairPrice pairPrice) {
+        public PriceStatistics(CurrencyPairPrice pairPrice)
+        {
             deliveredTotal = 0L;
             incomeTotal = 0L;
             this.pairPrice = pairPrice;
         }
 
-        public CurrencyPairPrice getPairPrice() {
+        public CurrencyPairPrice getPairPrice()
+        {
             return pairPrice;
         }
 
-        public void setPairPrice(CurrencyPairPrice pairPrice) {
+        public void setPairPrice(CurrencyPairPrice pairPrice)
+        {
             this.pairPrice = pairPrice;
         }
 
-        public float getDeliveredTotal() {
+        public float getDeliveredTotal()
+        {
             return deliveredTotal;
         }
 
-        public void setDeliveredTotal(Long deliveredTotal) {
+        public void setDeliveredTotal(Long deliveredTotal)
+        {
             this.deliveredTotal = deliveredTotal;
         }
 
-        public Long getIncomeTotal() {
+        public Long getIncomeTotal()
+        {
             return incomeTotal;
         }
 
-        public void setIncomeTotal(Long incomeTotal) {
+        public void setIncomeTotal(Long incomeTotal)
+        {
             this.incomeTotal = incomeTotal;
         }
 
-        public Float getRank() {
+        public Float getRank()
+        {
             return getIncomeTotal() != 0F
                     ? getDeliveredTotal() / getIncomeTotal()
                     : 0F;
         }
 
-        public boolean isHighestRank() {
+        public boolean isHighestRank()
+        {
             return getRank() == 1F;
         }
 
-        public void resetForHighestRank() {
+        public void resetForHighestRank()
+        {
             deliveredTotal = incomeTotal;
         }
 
         @Override
-        public int compareTo(PriceStatistics o) {
+        public int compareTo(PriceStatistics o)
+        {
             return this.getRank().compareTo(o.getRank());
         }
     }
 
     @Override
-    public void pushItem(CurrencyPairPrice currencyPairPrice) {
+    public void pushItem(CurrencyPairPrice currencyPairPrice)
+    {
 
         var statistics = reducedPairPrices.get(currencyPairPrice.getCcyPair());
 
-        if (statistics == null) {
+        if (statistics == null)
+        {
             statistics = new PriceStatistics(currencyPairPrice);
             statistics.setIncomeTotal(1L);
             reducedPairPrices.put(currencyPairPrice.getCcyPair(), statistics);
-        } else {
+        }
+        else
+        {
             statistics.setIncomeTotal(statistics.getIncomeTotal() + 1);
             statistics.setPairPrice(currencyPairPrice);
         }
     }
 
     @Override
-    public CurrencyPairPrice popItem() {
+    public CurrencyPairPrice popItem()
+    {
 
         var minRankPrice = findPriceWithMinRank();
 
-        if (minRankPrice != null) {
+        if (minRankPrice != null)
+        {
             var minStat = reducedPairPrices.get(minRankPrice.getCcyPair());
 
             if (minStat.isHighestRank())
@@ -104,18 +122,22 @@ final class DeliveryFreqRankThrottling implements ThrottlingStrategy {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
 
         boolean ret = true;
-        PriceStatistics minStat = null ;
+        PriceStatistics minStat = null;
 
-        for (var currentStat : reducedPairPrices.values()) {
+        for (var currentStat : reducedPairPrices.values())
+        {
 
-            if (minStat == null || minStat.compareTo(currentStat) > 0) {
+            if (minStat == null || minStat.compareTo(currentStat) > 0)
+            {
                 minStat = currentStat;
             }
 
-            if (!minStat.isHighestRank()) {
+            if (!minStat.isHighestRank())
+            {
                 ret = false;
                 break;
             }
@@ -124,13 +146,16 @@ final class DeliveryFreqRankThrottling implements ThrottlingStrategy {
         return ret;
     }
 
-    private CurrencyPairPrice findPriceWithMinRank() {
+    private CurrencyPairPrice findPriceWithMinRank()
+    {
         CurrencyPairPrice minRankPrice = null;
-        PriceStatistics minStat = null ;
+        PriceStatistics minStat = null;
 
-        for (var currentStat : reducedPairPrices.values()) {
+        for (var currentStat : reducedPairPrices.values())
+        {
 
-            if (minStat == null || minStat.compareTo(currentStat) > 0) {
+            if (minStat == null || minStat.compareTo(currentStat) > 0)
+            {
                 minStat = currentStat;
                 minRankPrice = minStat.getPairPrice();
             }

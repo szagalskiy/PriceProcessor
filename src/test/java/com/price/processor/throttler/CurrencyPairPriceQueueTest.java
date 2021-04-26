@@ -1,14 +1,10 @@
-package throttler;
+package com.price.processor.throttler;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
-
-import com.price.processor.throttler.CurrencyPairPrice;
-import com.price.processor.throttler.CurrencyPairPriceQueue;
-import com.price.processor.throttler.DeliveryFreqRankThrottling;
 
 public class CurrencyPairPriceQueueTest {
 

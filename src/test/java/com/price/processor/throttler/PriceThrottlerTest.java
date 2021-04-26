@@ -1,4 +1,4 @@
-package throttler;
+package com.price.processor.throttler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,10 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-
-//import org.junit.jupiter.api.DisplayName;
-
-import com.price.processor.throttler.PriceThrottler;
 
 public class PriceThrottlerTest
 {

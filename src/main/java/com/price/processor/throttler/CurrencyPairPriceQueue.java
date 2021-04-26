@@ -7,23 +7,24 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Class implements a pipe between producer and consumer
  * If consumer is slower than producer it reduces a price pairs to deliver the only last value per price pair
  */
-final class CurrencyPairPriceQueue {
+final class CurrencyPairPriceQueue
+{
 
     private final LinkedBlockingQueue<CurrencyPairPrice> pubSubQueue = new LinkedBlockingQueue<>();
     private final ThrottlingStrategy throttlingStrategy;
 
-
-    public CurrencyPairPriceQueue(ThrottlingStrategy throttlingStrategy) {
+    public CurrencyPairPriceQueue(ThrottlingStrategy throttlingStrategy)
+    {
         this.throttlingStrategy = throttlingStrategy;
     }
-
 
     /**
      * Implements non blocking write operation
      * @param pairPrice pair of currency
      * @return True if inserted successfully
      */
-    public boolean offer(CurrencyPairPrice pairPrice) {
+    public boolean offer(CurrencyPairPrice pairPrice)
+    {
         return pubSubQueue.offer(pairPrice);
     }
 
@@ -41,11 +42,13 @@ final class CurrencyPairPriceQueue {
         fetchedItem = pubSubQueue.poll();
         pubSubQueue.size();
 
-        if (fetchedItem != null) {
+        if (fetchedItem != null)
+        {
             throttlingStrategy.pushItem(fetchedItem);
             pubSubQueue.drainTo(pairPriceBatch);
 
-            for (var item : pairPriceBatch) {
+            for (var item : pairPriceBatch)
+            {
                 throttlingStrategy.pushItem(item);
             }
         }

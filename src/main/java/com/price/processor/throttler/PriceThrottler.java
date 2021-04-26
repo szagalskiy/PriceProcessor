@@ -19,9 +19,11 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     private final ExecutorService taskPool = Executors.newCachedThreadPool();
 
     @Override
-    public void onPrice(String ccyPair, double rate) {
+    public void onPrice(String ccyPair, double rate)
+    {
 
-        for (var entry: taskQueues.entrySet()) {
+        for (var entry : taskQueues.entrySet())
+        {
             var queue = entry.getValue();
             var processor = entry.getKey();
             queue.offer(new CurrencyPairPrice(ccyPair, rate));
@@ -30,7 +32,8 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     }
 
     @Override
-    public void subscribe(PriceProcessor priceProcessor) {
+    public void subscribe(PriceProcessor priceProcessor)
+    {
         var priceQueue = new CurrencyPairPriceQueue(getThrottlingStrategy());
         taskQueues.put(priceProcessor, priceQueue);
         //logger.info(priceProcessor.toString() + " subscribed");
@@ -38,7 +41,8 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     }
 
     @Override
-    public void  unsubscribe(PriceProcessor priceProcessor) {
+    public void unsubscribe(PriceProcessor priceProcessor)
+    {
 
         taskQueues.remove(priceProcessor);
         //logger.info(priceProcessor.toString() + " unsubscribed");
@@ -46,9 +50,11 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
 
-        for (var processor: tasks.keySet()) {
+        for (var processor : tasks.keySet())
+        {
             unsubscribe(processor);
             tasks.remove(processor);
         }
@@ -56,11 +62,13 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
         taskPool.shutdown();
     }
 
-    private void scheduleTask(PriceProcessor processor) {
+    private void scheduleTask(PriceProcessor processor)
+    {
 
         var task = tasks.get(processor);
 
-        if (task == null || task.isDone()) {
+        if (task == null || task.isDone())
+        {
             var queue = taskQueues.get(processor);
             var runnableTask = createTask(processor, queue);
             task = CompletableFuture.runAsync(runnableTask, taskPool);
@@ -69,31 +77,39 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
         tasks.put(processor, task);
     }
 
-    private Runnable createTask(PriceProcessor processor, CurrencyPairPriceQueue queue) {
-        return () -> {
-
+    private Runnable createTask(PriceProcessor processor, CurrencyPairPriceQueue queue)
+    {
+        return () ->
+        {
             var isRunning = true;
-
-            do {
-                    CurrencyPairPrice pairPrice;
-                    try {
-                            pairPrice = queue.poll();
-
-                            if (pairPrice == null) {
-                                isRunning = false;
-                            } else {
-                                processor.onPrice(pairPrice.getCcyPair(), pairPrice.getRate());
-                            }
-                    } catch (InterruptedException e) {
-                        //logger.info("Task interrupted");
-                        System.out.println("Task interrupted");
+            do
+            {
+                CurrencyPairPrice pairPrice;
+                try
+                {
+                    pairPrice = queue.poll();
+                    if (pairPrice == null)
+                    {
                         isRunning = false;
                     }
-            } while(isRunning);
+                    else
+                    {
+                        processor.onPrice(pairPrice.getCcyPair(), pairPrice.getRate());
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    //logger.info("Task interrupted");
+                    System.out.println("Task interrupted");
+                    isRunning = false;
+                }
+            }
+            while (isRunning);
         };
     }
 
-    private ThrottlingStrategy getThrottlingStrategy() {
+    private ThrottlingStrategy getThrottlingStrategy()
+    {
         return new DeliveryFreqRankThrottling();
     }
 }
