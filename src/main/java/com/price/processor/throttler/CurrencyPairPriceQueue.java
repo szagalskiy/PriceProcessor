@@ -20,6 +20,7 @@ final class CurrencyPairPriceQueue
 
     /**
      * Implements non blocking write operation
+     *
      * @param pairPrice pair of currency
      * @return True if inserted successfully
      */
@@ -30,6 +31,7 @@ final class CurrencyPairPriceQueue
 
     /**
      * Implements non blocking read.
+     *
      * @return <c>CurrencyPairPrice</c> from producer
      * @throws InterruptedException the Interrupted exception
      */
@@ -47,10 +49,12 @@ final class CurrencyPairPriceQueue
             throttlingStrategy.pushItem(fetchedItem);
             pubSubQueue.drainTo(pairPriceBatch);
 
-            for (var item : pairPriceBatch)
+/*            for (var item : pairPriceBatch)
             {
                 throttlingStrategy.pushItem(item);
-            }
+            }*/
+
+            pairPriceBatch.forEach(item -> throttlingStrategy.pushItem(item));
         }
 
         fetchedItem = throttlingStrategy.popItem();

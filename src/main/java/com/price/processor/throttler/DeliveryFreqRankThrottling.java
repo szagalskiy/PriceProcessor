@@ -125,12 +125,11 @@ final class DeliveryFreqRankThrottling implements ThrottlingStrategy
     public boolean isEmpty()
     {
 
-        boolean ret = true;
+        boolean result = true;
         PriceStatistics minStat = null;
 
         for (var currentStat : reducedPairPrices.values())
         {
-
             if (minStat == null || minStat.compareTo(currentStat) > 0)
             {
                 minStat = currentStat;
@@ -138,12 +137,12 @@ final class DeliveryFreqRankThrottling implements ThrottlingStrategy
 
             if (!minStat.isHighestRank())
             {
-                ret = false;
+                result = false;
                 break;
             }
         }
 
-        return ret;
+        return result;
     }
 
     private CurrencyPairPrice findPriceWithMinRank()
