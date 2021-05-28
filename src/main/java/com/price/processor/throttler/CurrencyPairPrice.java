@@ -1,7 +1,7 @@
 package com.price.processor.throttler;
 
 /**
- * Implements an immutable object to interchange between producer and consumer
+ * An immutable object to interchange between producer and consumer
  */
 final class CurrencyPairPrice {
 

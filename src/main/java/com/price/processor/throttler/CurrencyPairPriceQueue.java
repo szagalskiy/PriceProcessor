@@ -49,11 +49,6 @@ final class CurrencyPairPriceQueue
             throttlingStrategy.pushItem(fetchedItem);
             pubSubQueue.drainTo(pairPriceBatch);
 
-/*            for (var item : pairPriceBatch)
-            {
-                throttlingStrategy.pushItem(item);
-            }*/
-
             pairPriceBatch.forEach(item -> throttlingStrategy.pushItem(item));
         }
 

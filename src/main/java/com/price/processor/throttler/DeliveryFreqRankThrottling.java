@@ -7,7 +7,7 @@ import java.util.HashMap;
  * Provides the equal chance to deliver pair prices regardless of their income frequency
  * The rank is defined as a Rank = DeliveredCount/IncomeCount
  * Rank is value defined on [0; 1].
- * Pair price with minimal rank is a the next to be returned
+ * Pair price with minimal rank is the next to be returned
  * As pair price is returned, rank is recalculated to provide the equal chance to deliver
  */
 final class DeliveryFreqRankThrottling implements ThrottlingStrategy

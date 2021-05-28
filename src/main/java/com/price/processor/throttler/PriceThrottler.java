@@ -8,11 +8,13 @@ import java.util.concurrent.Executors;
 //import org.apache.logging.log4j.Logger;
 
 import com.price.processor.PriceProcessor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PriceThrottler implements PriceProcessor, AutoCloseable
 {
 
-    //private final static Logger logger = LogManager.getLogger(PriceThrottler.class);
+    private static final Logger LOG = LogManager.getLogger(PriceThrottler.class);
 
     private final ConcurrentHashMap<PriceProcessor, CompletableFuture<Void>> tasks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<PriceProcessor, CurrencyPairPriceQueue> taskQueues = new ConcurrentHashMap<>();
@@ -36,7 +38,7 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     {
         var priceQueue = new CurrencyPairPriceQueue(getThrottlingStrategy());
         taskQueues.put(priceProcessor, priceQueue);
-        //logger.info(priceProcessor.toString() + " subscribed");
+        LOG.info(priceProcessor.toString() + " subscribed");
         System.out.println(priceProcessor.toString() + " subscribed");
     }
 
@@ -45,8 +47,7 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
     {
 
         taskQueues.remove(priceProcessor);
-        //logger.info(priceProcessor.toString() + " unsubscribed");
-        System.out.println(priceProcessor.toString() + " unsubscribed");
+        LOG.info(priceProcessor.toString() + " unsubscribed");
     }
 
     @Override
@@ -99,8 +100,7 @@ public class PriceThrottler implements PriceProcessor, AutoCloseable
                 }
                 catch (InterruptedException e)
                 {
-                    //logger.info("Task interrupted");
-                    System.out.println("Task interrupted");
+                    LOG.info("Task interrupted");
                     isRunning = false;
                 }
             }

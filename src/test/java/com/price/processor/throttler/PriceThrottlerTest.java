@@ -153,8 +153,7 @@ public class PriceThrottlerTest
         }
 
         // Assert
-        // TODO check how to compare to Maps
-        assertEquals(prices.size(), listener.getProcessedPrices().size());
+        assertTrue(prices.equals(listener.getProcessedPrices()));
     }
 
     @Test
@@ -224,10 +223,9 @@ public class PriceThrottlerTest
 
         throttler.close();
 
-        // TODO check how to compare two Maps
         for (var listener : listeners)
         {
-            assertEquals(prices.size(), listener.getProcessedPrices().size());
+            assertTrue(prices.equals(listener.getProcessedPrices()));
         }
     }
 }
